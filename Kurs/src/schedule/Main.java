@@ -1,19 +1,19 @@
 package schedule;
 
-import JSON.JsonWriter;
-import shipment.Port;
+import JSON.JsonReader;
+import shipment.PortScatter;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main
 {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws IOException {
         Generate generatedShip = new Generate();
         generatedShip.generate(10);
-        List<Ship> arrayShips = generatedShip.getArrayShips();
-        Port port = new Port();
-        port.setListsOfCargo(arrayShips);
+        JsonReader jsonReader = new JsonReader();
+        List<Ship> arrayShips = jsonReader.readSchedule();
+        PortScatter port = new PortScatter(arrayShips);
+
     }
 }

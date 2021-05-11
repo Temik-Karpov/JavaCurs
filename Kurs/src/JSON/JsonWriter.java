@@ -1,32 +1,27 @@
 package JSON;
 
-import schedule.Generate;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import schedule.Ship;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 public class JsonWriter
 {
-    public JsonWriter(int numberOfShips)
+    public void writeSchedule(List<Ship> arrayShips)
     {
-        Generate generatedShip = new Generate();
-        generatedShip.generate(numberOfShips);
-        Scanner input = new Scanner(System.in);
-        while (true)
+        final String file = "ScheduleFile.json";
+        ObjectMapper mapper = new ObjectMapper();
+        try
         {
-            System.out.println("Enough?");
-            String answer = input.nextLine();
-            if (answer.equals("no"))
-            {
-                generatedShip.ManualEntry();
-            }
-            else
-            {
-                break;
-            }
+            mapper.writeValue(Paths.get(file).toFile(), arrayShips);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
-
-        generatedShip.getArrayShips().sort(Comparator.comparing(Ship::getUnloadTime));
-        System.out.println(generatedShip.getArrayShips());
     }
 }

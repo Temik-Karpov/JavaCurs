@@ -1,42 +1,64 @@
 package shipment;
 
-import schedule.Generate;
 import schedule.Ship;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class Port
+public class Port extends Thread
 {
-    private List<Ship> ListOfLooseCargo;
-    private List<Ship> ListOfLiquidCargo;
-    private List<Ship> ListOfContainerCargo;
+    private final int CRANE_COST = 30000;
+    private int craneThreads;
+    private int currentDelay;
+    private List<Ship> ships;
+    private ConcurrentLinkedQueue<Ship> queueOfShips;
+    private ArrayList<CraneSimulation> listOfCranes;
+    private Statistic statistic;
 
-    public void setListsOfCargo(List<Ship> ships)
+    public Port(List<Ship> ships)
     {
-        ListOfLooseCargo = new ArrayList<Ship>();
-        ListOfLiquidCargo = new ArrayList<Ship>();
-        ListOfContainerCargo = new ArrayList<Ship>();
-        for(Ship ship : ships)
-        {
-            Scatter(ship);
-        }
-
+        this.ships = ships;
     }
 
-    private void Scatter(Ship ship)
+    @Override
+    public void run()
     {
-        switch (ship.getCargoType()) {
-            case LOOSE:
-                ListOfLooseCargo.add(ship);
-                break;
-            case LIQUID:
-                ListOfLiquidCargo.add(ship);
-                break;
-            case CONTAINER:
-                ListOfContainerCargo.add(ship);
-                break;
+        while (currentDelay >= CRANE_COST * craneThreads)
+        {
+            queueOfShips = new ConcurrentLinkedQueue<>(ships);
+            craneThreads++;
+            listOfCranes = new ArrayList<>(craneThreads);
+            ExecutorService executor = Executors.newFixedThreadPool(craneThreads);
+            for (int i = 0; i < craneThreads; i++)
+            {
+                CraneSimulation crane = new CraneSimulation(queueOfShips);
+                listOfCranes.add(crane);
+            }
+            try {
+                List<Future<Object>> result = executor.invokeAll(listOfCranes);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            executor.shutdown();
+            currentDelay = 0;
+            for (CraneSimulation crane : listOfCranes)
+            {
+                currentDelay += crane.getDelay();
+            }
         }
+    }
+
+    public int getCountCranes()
+    {
+        return craneThreads;
+    }
+
+    public int getCurrentDelay()
+    {
+        return currentDelay;
     }
 }

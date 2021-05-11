@@ -5,21 +5,21 @@ public class Ship
     private String name_;
     private CargoType cargoType_;
     private int cargoWeight_;
-    private Time unloadTime_;
-    private int date_;
+    private int unloadTime_;
+    private int day_;
     private Time time_;
 
     public Ship()
     {}
 
-    public Ship(String name, CargoType cargoType, int cargoWeight, int date, Time time)
+    public Ship(String name, CargoType cargoType, int cargoWeight, int date, Time time, int unloadTime)
     {
         this.name_ = name;
         this.cargoType_ = cargoType;
         this.cargoWeight_ = cargoWeight;
-        this.date_ = date;
+        this.day_ = date;
         this.time_ = time;
-        setUnloadTime();
+        this.unloadTime_ = unloadTime;
     }
 
     public Ship(Ship other)
@@ -27,30 +27,24 @@ public class Ship
         this.name_ = other.name_;
         this.cargoType_ = other.cargoType_;
         this.cargoWeight_ = other.cargoWeight_;
-        this.date_ = other.date_;
+        this.day_ = other.day_;
         this.unloadTime_ = other.unloadTime_;
         this.time_ = other.time_;
     }
 
-    public void setUnloadTime()
-    {
-        switch(cargoType_)
-        {
-            case LOOSE:
-                unloadTime_ = new Time(cargoWeight_ / 2);
-                break;
-            case LIQUID:
-                unloadTime_ = new Time(cargoWeight_ / 4);
-                break;
-            case CONTAINER:
-                unloadTime_ = new Time(cargoWeight_ / 6);
-                break;
-        }
-    }
-
     public int getUnloadTime()
     {
-        return unloadTime_.toMinutes();
+        return this.unloadTime_;
+    }
+
+    public void setUnloadTime(int unloadTime)
+    {
+        this.unloadTime_ = unloadTime;
+    }
+
+    public int getTime()
+    {
+        return time_.toMinutes() + (day_ - 1) * 60 * 24;
     }
 
     public void setName(int name)
@@ -63,16 +57,16 @@ public class Ship
         return this.cargoType_;
     }
 
-    public void setCargoType(int cargoType)
+    public void setCargoType(String cargoType)
     {
         switch(cargoType) {
-            case 1:
+            case "LOOSE":
                 this.cargoType_ = CargoType.LOOSE;
                 break;
-            case 2:
+            case "LIQUID":
                 this.cargoType_ = CargoType.LIQUID;
                 break;
-            case 3:
+            case "CONTAINER":
                 this.cargoType_ = CargoType.CONTAINER;
                 break;
         }
@@ -85,7 +79,7 @@ public class Ship
 
     public void setDate(int day)
     {
-        this.date_ = day;
+        this.day_ = day;
     }
 
     public void setTime(Time time)
@@ -98,9 +92,8 @@ public class Ship
         System.out.println("Ship Name: " + name_);
         System.out.println("Cargo type: " + cargoType_);
         System.out.println("Cargo weight: " + cargoWeight_);
-        System.out.println("Ship arrival date: " + date_);
-        System.out.println("Ship arrival time: " + this.time_.toString());
-        System.out.println("Unloading time:" + this.unloadTime_.toString());
+        System.out.println("Ship arrival time: " + day_ + ":" + this.time_.toString());
+        System.out.println("Unloading time:" + this.unloadTime_);
     }
 
 
