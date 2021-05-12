@@ -12,53 +12,55 @@ import java.util.concurrent.Future;
 public class Port extends Thread
 {
     private final int CRANE_COST = 30000;
-    private int craneThreads;
-    private int currentDelay;
-    private List<Ship> ships;
-    private ConcurrentLinkedQueue<Ship> queueOfShips;
-    private ArrayList<CraneSimulation> listOfCranes;
-    private Statistic statistic;
+    private int craneThreads_;
+    private int currentDelay_;
+    private List<Ship> ships_;
+    private ConcurrentLinkedQueue<Ship> queueOfShips_;
+    private ArrayList<CraneSimulation> listOfCranes_;
+    private Statistic statistic_;
 
     public Port(List<Ship> ships)
     {
-        this.ships = ships;
+        this.ships_ = ships;
     }
 
     @Override
     public void run()
     {
-        while (currentDelay >= CRANE_COST * craneThreads)
+        while (currentDelay_ >= CRANE_COST * craneThreads_)
         {
-            queueOfShips = new ConcurrentLinkedQueue<>(ships);
-            craneThreads++;
-            listOfCranes = new ArrayList<>(craneThreads);
-            ExecutorService executor = Executors.newFixedThreadPool(craneThreads);
-            for (int i = 0; i < craneThreads; i++)
+            queueOfShips_ = new ConcurrentLinkedQueue<>(ships_);
+            craneThreads_++;
+            currentDelay_ = 0;
+            listOfCranes_ = new ArrayList<>(craneThreads_);
+            ExecutorService executor = Executors.newFixedThreadPool(craneThreads_);
+            for (int i = 0; i < craneThreads_; i++)
             {
-                CraneSimulation crane = new CraneSimulation(queueOfShips);
-                listOfCranes.add(crane);
+                CraneSimulation crane = new CraneSimulation(queueOfShips_);
+                listOfCranes_.add(crane);
             }
             try {
-                List<Future<Object>> result = executor.invokeAll(listOfCranes);
+                List<Future<Object>> result = executor.invokeAll(listOfCranes_);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             executor.shutdown();
-            currentDelay = 0;
-            for (CraneSimulation crane : listOfCranes)
+            for (CraneSimulation crane : listOfCranes_)
             {
-                currentDelay += crane.getDelay();
+                currentDelay_ += crane.getDelay();
             }
         }
+        statistic_ = new Statistic();
+        statistic_.printStatistic(this.ships_.get(0).getCargoType(), craneThreads_, currentDelay_);
     }
 
     public int getCountCranes()
     {
-        return craneThreads;
+        return craneThreads_;
     }
 
-    public int getCurrentDelay()
+    public int getCurrentDelay_()
     {
-        return currentDelay;
+        return currentDelay_;
     }
 }

@@ -10,18 +10,18 @@ import java.nio.file.Paths;
 
 public class JsonReader
 {
-    List<Ship> arrayShips;
+    List<Ship> arrayShips_;
     private final String file = "ScheduleFile.json";
     public List<Ship> readSchedule()
     {
-        arrayShips = new ArrayList<Ship>();
+        arrayShips_ = new ArrayList<Ship>();
         ObjectMapper mapper = new ObjectMapper();
         try
         {
-            arrayShips = Arrays.asList(mapper.readValue(Paths.get(file).toFile(), Ship[].class));
+            arrayShips_ = Arrays.asList(mapper.readValue(Paths.get(file).toFile(), Ship[].class));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return arrayShips;
+        return arrayShips_;
     }
 }

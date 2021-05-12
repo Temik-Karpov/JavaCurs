@@ -6,12 +6,12 @@ import JSON.JsonWriter;
 
 public class Generate
 {
-    private List<Ship> arrayShips;
+    private List<Ship> arrayShips_;
     public Generate()
     {}
 
     public void generate(int numberOfShips) throws IOException {
-        this.arrayShips = new ArrayList();
+        this.arrayShips_ = new ArrayList();
         for(int i = 0; i < numberOfShips; i++)
         {
             Ship newShip = new Ship();
@@ -43,7 +43,7 @@ public class Generate
             newShip.setCargoType(cargoType);
             int unloadTime = countUnloadTime(cargoType, cargoWeight);
             newShip.setUnloadTime(unloadTime);
-            this.arrayShips.add(newShip);
+            this.arrayShips_.add(newShip);
             newShip.printInfo();
         }
         Scanner input = new Scanner(System.in);
@@ -59,9 +59,9 @@ public class Generate
                 break;
             }
         }
-        arrayShips.sort(Comparator.comparing(Ship::getTime));
+        arrayShips_.sort(Comparator.comparing(Ship::getTime));
         JsonWriter jsonWriter = new JsonWriter();
-        jsonWriter.writeSchedule(arrayShips);
+        jsonWriter.writeSchedule(arrayShips_);
     }
 
     public void ManualEntry() throws IOException {
@@ -131,7 +131,7 @@ public class Generate
             time.setMinutes(minutes);
         }
         ship.setTime(time);
-        this.arrayShips.add(ship);
+        this.arrayShips_.add(ship);
     }
 
     public int countUnloadTime(String cargoType, int cargoWeight)
@@ -151,8 +151,8 @@ public class Generate
         return unloadTime;
     }
 
-    public List<Ship> getArrayShips()
+    public List<Ship> getArrayShips_()
     {
-        return arrayShips;
+        return arrayShips_;
     }
 }
