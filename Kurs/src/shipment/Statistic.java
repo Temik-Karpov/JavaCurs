@@ -4,9 +4,10 @@ import schedule.CargoType;
 
 public class Statistic
 {
-    private int shipsCount;
+    private int numberOfShips;
     private int maxDelay;
     private int averageDelay;
+    private int fine;
     private int liquidCount;
     private int looseCount;
     private int containerCount;
@@ -15,9 +16,10 @@ public class Statistic
         liquidCount = 0;
         looseCount = 0;
         containerCount = 0;
-        shipsCount = 0;
+        numberOfShips = 0;
         maxDelay = 0;
         averageDelay = 0;
+        fine = 0;
     }
 
     /*public void printStatistic()
@@ -30,28 +32,54 @@ public class Statistic
         System.out.println("Count of container cranes " + this.containerCount);
     }*/
     
-    public void printStatistic(CargoType cargoType, int craneCount, int fineAmount)
+    public void printCraneStatistic(CargoType cargoType, int craneCount)
     {
         String stringCount;
-        String stringFine;
         switch(cargoType)
         {
             case LOOSE:
                 stringCount = "Count of loose cranes ";
-                stringFine = "Fine amount of loose = ";
                 break;
             case LIQUID:
                 stringCount = "Count of liquid cranes ";
-                stringFine = "Fine amount of liquid = ";
                 break;
             case CONTAINER:
                 stringCount = "Count of container cranes ";
-                stringFine = "Fine amount of container = ";
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + cargoType);
         }
         System.out.println(stringCount + craneCount);
-        System.out.println(stringFine + fineAmount);
+    }
+
+    public void setMaxDelay(int delay)
+    {
+        if(this.maxDelay < delay)
+        {
+            this.maxDelay = delay;
+        }
+    }
+
+    public void setAverageDelay(int delay, int numberOfShips)
+    {
+        this.averageDelay = delay / numberOfShips;
+    }
+
+    public void setFine(int fine)
+    {
+        this.fine += fine;
+    }
+
+    public void setNumberOfShips(int numberOfShips)
+    {
+        this.numberOfShips = numberOfShips;
+    }
+
+    public void printInfo()
+    {
+        System.out.println("Count of ships = " + this.numberOfShips);
+        System.out.println("MaxDelay =  " + this.maxDelay);
+        //System.out.println("Fine = " + this.fine);
+        System.out.println("AverageDelay = " + this.averageDelay);
     }
 }

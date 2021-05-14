@@ -3,6 +3,7 @@ package schedule;
 import java.io.IOException;
 import java.util.*;
 import JSON.JsonWriter;
+import shipment.Statistic;
 
 public class Generate
 {
@@ -12,20 +13,33 @@ public class Generate
 
     public void generate(int numberOfShips) throws IOException {
         this.arrayShips_ = new ArrayList();
+        int sumOfDelay = 0;
+        Statistic statistic = new Statistic();
+        statistic.setNumberOfShips(numberOfShips);
         for(int i = 0; i < numberOfShips; i++)
         {
             Ship newShip = new Ship();
             int name = (int)(Math.random() * (10000 - 1) + 1);
             newShip.setName(name);
             int date = (int)(Math.random() * (30 - 1)+1);
-            newShip.setDate(date);
-            int cargoWeight = (int)(Math.random() * (100-7)+7);
+            int lateness = (int)(Math.random()*14 - 7);
+            if((date + lateness <= 0) || (date + lateness > 30))
+            {
+                newShip.setDate(date);
+            }
+            else {
+                newShip.setDate(date + lateness);
+            }
+            int cargoWeight = (int)(Math.random() * (1000-1)+1);
             newShip.setCargoWeight(cargoWeight);
             Time time = new Time();
             time.setHours((int)(Math.random() * 24));
             time.setMinutes((int)(Math.random() * (60-1)+1));
             newShip.setTime(time);
-            int random = (int) (Math.random() * 3);
+            int random = (int)(Math.random() * 3);
+            int delay = (int)(Math.random() * 1441);
+            sumOfDelay += delay;
+            statistic.setMaxDelay(delay);
             String cargoType;
             switch(random) {
                 case 0:
@@ -41,11 +55,12 @@ public class Generate
                     throw new IOException();
             }
             newShip.setCargoType(cargoType);
-            int unloadTime = countUnloadTime(cargoType, cargoWeight);
+            int unloadTime = countUnloadTime(cargoType, cargoWeight, delay);
             newShip.setUnloadTime(unloadTime);
             this.arrayShips_.add(newShip);
             newShip.printInfo();
         }
+        statistic.setAverageDelay(sumOfDelay, numberOfShips);
         Scanner input = new Scanner(System.in);
         while (true)
         {
@@ -62,6 +77,7 @@ public class Generate
         arrayShips_.sort(Comparator.comparing(Ship::getTime));
         JsonWriter jsonWriter = new JsonWriter();
         jsonWriter.writeSchedule(arrayShips_);
+        statistic.printInfo();
     }
 
     public void ManualEntry() throws IOException {
@@ -134,21 +150,21 @@ public class Generate
         this.arrayShips_.add(ship);
     }
 
-    public int countUnloadTime(String cargoType, int cargoWeight)
+    public int countUnloadTime(String cargoType, int cargoWeight, int delay)
     {
         int unloadTime = 0;
         switch(cargoType) {
             case "LOOSE":
-                unloadTime = cargoWeight / 2;
+                unloadTime = cargoWeight / 6;
                 break;
             case "LIQUID":
                 unloadTime = cargoWeight / 4;
                 break;
             case "CONTAINER":
-                unloadTime = cargoWeight / 6;
+                unloadTime = cargoWeight / 2;
                 break;
         }
-        return unloadTime;
+            return unloadTime + delay;
     }
 
     public List<Ship> getArrayShips_()

@@ -13,7 +13,8 @@ public class Port extends Thread
 {
     private final int CRANE_COST = 30000;
     private int craneThreads_;
-    private int currentDelay_;
+    private int currentFine_ = 0;
+    private int AllQueueOfShips_ = 0;
     private List<Ship> ships_;
     private ConcurrentLinkedQueue<Ship> queueOfShips_;
     private ArrayList<CraneSimulation> listOfCranes_;
@@ -27,11 +28,11 @@ public class Port extends Thread
     @Override
     public void run()
     {
-        while (currentDelay_ >= CRANE_COST * craneThreads_)
+        while (currentFine_ >= CRANE_COST * craneThreads_)
         {
             queueOfShips_ = new ConcurrentLinkedQueue<>(ships_);
             craneThreads_++;
-            currentDelay_ = 0;
+            currentFine_ = 0;
             listOfCranes_ = new ArrayList<>(craneThreads_);
             ExecutorService executor = Executors.newFixedThreadPool(craneThreads_);
             for (int i = 0; i < craneThreads_; i++)
@@ -47,11 +48,11 @@ public class Port extends Thread
             executor.shutdown();
             for (CraneSimulation crane : listOfCranes_)
             {
-                currentDelay_ += crane.getDelay();
+                currentFine_ += crane.getFine();
             }
         }
         statistic_ = new Statistic();
-        statistic_.printStatistic(this.ships_.get(0).getCargoType(), craneThreads_, currentDelay_);
+        statistic_.printCraneStatistic(this.ships_.get(0).getCargoType(), craneThreads_);
     }
 
     public int getCountCranes()
@@ -59,8 +60,8 @@ public class Port extends Thread
         return craneThreads_;
     }
 
-    public int getCurrentDelay_()
+    public int getCurrentFine_()
     {
-        return currentDelay_;
+        return currentFine_;
     }
 }

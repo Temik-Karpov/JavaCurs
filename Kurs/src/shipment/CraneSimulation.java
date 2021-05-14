@@ -44,7 +44,7 @@ public class CraneSimulation implements Callable<Object>
         return null;
     }
 
-    public int getDelay()
+    public int getFine()
     {
         return craneFine_;
     }

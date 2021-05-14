@@ -13,8 +13,7 @@ public class PortScatter
     private Port liquidShips_;
     private Port containerShips_;
 
-    public PortScatter(List<Ship> ships)
-    {
+    public PortScatter(List<Ship> ships) throws InterruptedException {
         ListOfLooseCargo_ = new ArrayList<Ship>();
         ListOfLiquidCargo_ = new ArrayList<Ship>();
         ListOfContainerCargo_ = new ArrayList<Ship>();
@@ -38,6 +37,8 @@ public class PortScatter
         looseShips_.start();
         liquidShips_.start();
         containerShips_.start();
-        System.out.println("Count of ships = " + ships.size());
+        looseShips_.join();
+        int fine = looseShips_.getCurrentFine_() + liquidShips_.getCurrentFine_() + containerShips_.getCurrentFine_();
+        System.out.println("Fine = " + fine);
     }
 }
