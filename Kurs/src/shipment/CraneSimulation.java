@@ -10,6 +10,7 @@ public class CraneSimulation implements Callable<Object>
     private int currentTime_ = -43200;
     private int craneFine_ = 0;
     private ConcurrentLinkedQueue<Ship> ships_;
+    private int queueSize_ = 0;
 
     public CraneSimulation(ConcurrentLinkedQueue<Ship> ships)
     {
@@ -40,6 +41,10 @@ public class CraneSimulation implements Callable<Object>
                     craneFine_ += 100 * (timeDelay / 60 + 1);
                 }
             }
+            /*if(currentShip.getUnloadTime() + currentShip.getTime() >= nextShip.getTime())
+            {
+                queueSize_++;
+            }*/
         }
         return null;
     }
@@ -48,4 +53,8 @@ public class CraneSimulation implements Callable<Object>
     {
         return craneFine_;
     }
+    /*public int getQueueSize()
+    {
+        return queueSize_;
+    }*/
 }

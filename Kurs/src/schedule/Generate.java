@@ -77,7 +77,7 @@ public class Generate
         arrayShips_.sort(Comparator.comparing(Ship::getTime));
         JsonWriter jsonWriter = new JsonWriter();
         jsonWriter.writeSchedule(arrayShips_);
-        statistic.printInfo();
+        statistic.printShipInfo();
     }
 
     public void ManualEntry() throws IOException {
@@ -155,13 +155,13 @@ public class Generate
         int unloadTime = 0;
         switch(cargoType) {
             case "LOOSE":
-                unloadTime = cargoWeight / 6;
+                unloadTime = cargoWeight / 10;
                 break;
             case "LIQUID":
-                unloadTime = cargoWeight / 4;
+                unloadTime = cargoWeight / 8;
                 break;
             case "CONTAINER":
-                unloadTime = cargoWeight / 2;
+                unloadTime = cargoWeight / 6;
                 break;
         }
             return unloadTime + delay;

@@ -19,6 +19,7 @@ public class Port extends Thread
     private ConcurrentLinkedQueue<Ship> queueOfShips_;
     private ArrayList<CraneSimulation> listOfCranes_;
     private Statistic statistic_;
+    private int queueSize_ = 0;
 
     public Port(List<Ship> ships)
     {
@@ -51,8 +52,10 @@ public class Port extends Thread
                 currentFine_ += crane.getFine();
             }
         }
-        statistic_ = new Statistic();
-        statistic_.printCraneStatistic(this.ships_.get(0).getCargoType(), craneThreads_);
+        /*for (CraneSimulation crane : listOfCranes_)
+        {
+            this.queueSize_ += crane.getQueueSize();
+        }*/
     }
 
     public int getCountCranes()
@@ -60,8 +63,13 @@ public class Port extends Thread
         return craneThreads_;
     }
 
-    public int getCurrentFine_()
+    public int getCurrentFine()
     {
         return currentFine_;
+    }
+
+    public int getQueueSize()
+    {
+        return queueSize_;
     }
 }

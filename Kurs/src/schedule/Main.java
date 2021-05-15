@@ -15,5 +15,6 @@ public class Main
         JsonReader jsonReader = new JsonReader();
         List<Ship> arrayShips = jsonReader.readSchedule();
         PortScatter port = new PortScatter(arrayShips);
+        port.setStatistic();
     }
 }
