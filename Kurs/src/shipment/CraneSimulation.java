@@ -7,14 +7,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CraneSimulation implements Callable<Object>
 {
-    private int currentTime_ = -43200;
-    private int craneFine_ = 0;
+    private int craneFine_;
     private ConcurrentLinkedQueue<Ship> ships_;
-    private int queueSize_ = 0;
+    private int queueSize_;
 
     public CraneSimulation(ConcurrentLinkedQueue<Ship> ships)
     {
         this.ships_ = ships;
+        this.craneFine_ = 0;
+        this.queueSize_ = 0;
     }
 
     @Override
@@ -28,20 +29,13 @@ public class CraneSimulation implements Callable<Object>
                 break;
             }
             Ship currentShip = ships_.poll();
-            currentTime_ = Math.max(currentTime_, currentShip.getTime());
-            currentTime_ += currentShip.getUnloadTime();
-            if (nextShip.getTime() < currentTime_)
+            int currentTime = currentShip.getUnloadTime() + currentShip.getTime();
+            if (currentTime > nextShip.getTime())
             {
-                int timeDelay = currentTime_ - nextShip.getTime();
-                if (timeDelay % 60 == 0)
-                {
-                    craneFine_ += 100 * (timeDelay / 60);
-                }
-                else {
-                    craneFine_ += 100 * (timeDelay / 60 + 1);
-                }
+                int timeDelay = currentTime - nextShip.getTime();
+                craneFine_ += 100 * (timeDelay / 60);
             }
-            /*if(currentShip.getUnloadTime() + currentShip.getTime() >= nextShip.getTime())
+            /*if(currentShip.getUnloadTime() + currentShip.getTime() > nextShip.getTime())
             {
                 queueSize_++;
             }*/
