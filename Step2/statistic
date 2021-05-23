@@ -1,0 +1,10 @@
+{
+  "numberOfShips" : 0,
+  "maxDelay" : 0,
+  "averageDelay" : 0,
+  "fine" : 121700,
+  "liquidCount" : 2,
+  "looseCount" : 2,
+  "containerCount" : 2,
+  "cranesCount" : 0
+}
